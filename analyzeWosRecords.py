@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import os, urllib.request, requests
 
-webOfScienceExportFiles = ["allWosExports.txt"]
+webOfScienceExportFiles = ["2019.txt"]
 
 # Use arxiv because the fucking Elsevier website makes it too difficult to download stuff
 def getLinkFromArxiv(doi):
@@ -20,15 +20,15 @@ def getPaper(doi, outFile):
   elif 'jhep'                              in doi: link = 'https://link.springer.com/content/pdf/' + doi.replace('/', '%2F')
   elif 'epjconf'                           in doi: link = getLinkFromArxiv(doi)
   elif 'epjc'                              in doi: link = 'https://link.springer.com/content/pdf/' + doi
-# elif '10.1038/nature14474'               == doi: link = 'https://www.nature.com/nature/journal/v522/n7554/pdf/nature14474.pdf' # Add special cases like this
   elif 'physletb'                          in doi: link = getLinkFromArxiv(doi)
-# else:                                            link = 'https://iopscience.iop.org/article/' + doi + '/pdf'  # for the ones on IOP science, but they block your IP if you download too much
-  else:                                            link = getLinkFromArxiv(doi)
-  if link: 
+# elif '10.1038/nature14474'               == doi: link = 'https://www.nature.com/nature/journal/v522/n7554/pdf/nature14474.pdf' # Add special cases like this
+  else:                                            link = 'https://iopscience.iop.org/article/' + doi + '/pdf'  # for the ones on IOP science, but they block your IP if you download too much
+# else:                                            link = getLinkFromArxiv(doi)
+  if link:
     try:    urllib.request.urlretrieve(link, outFile)
     except: print('Problem with link ' + link)
   else:     print('Do not know what to do with ' + doi)
-  
+
 
 
 def writeSingleRecord(outFile, lines):
@@ -36,7 +36,9 @@ def writeSingleRecord(outFile, lines):
   if foundGhent:
     with open(outFile, 'w') as out:
       for line in lines:
-        if line.startswith('DI'): getPaper(line.split()[-1], outFile.replace('.txt', '.pdf'))
+        if line.startswith('DI'):
+          getPaper(line.split()[-1], outFile.replace('.txt', '.pdf'))
+          print("Downloading %s" % line.replace('DI ', ''))
         out.write(line)
   return foundGhent
 
@@ -50,6 +52,6 @@ for fileName in webOfScienceExportFiles:
     for line in f:
       if line=='\n': continue
       lines += [line]
-      if line=='ER\n': 
+      if line=='ER\n': # ER="End record", i.e. we can analyze the collected lines
         if writeSingleRecord('wosImports/CMS-paper-' + str(i).zfill(4) + '.txt', lines): i+=1
         lines = lines[:2] # clean everything after the first two lines
