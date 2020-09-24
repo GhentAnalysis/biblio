@@ -20,7 +20,8 @@ The resulting list can be exported ("Export...") by "Other File Formats", then y
 Note I did this export on the search results webpage which takes way less time than going to all records individually.
 
 ## 3
-I've written a script (see attachment) which breaks down this export file and divides them in separate records + downloads the pdf's for each of these records [possibly there might be a few special cases which have to be checked manually, just add it to the elif statements]
+I've written a script (see attachment) which breaks down this export file and divides them in separate records + downloads the pdf's for each of these records [possibly there might be a few special cases which have to be checked manually, just add it to the elif statements].
+Also, try to open all pdf's to check if they were downloaded correctly. Journals like to change their website often, in order to make you spend time in updating your scripts. That's how bureaucracy works: "you shall not automatize!"
 
 ## 4
 Zip the directory with wos-records and pdf's, as created by the script, and upload it to a filesharing link, and ask the Biblio people (biblio@ugent.be) to upload it.
