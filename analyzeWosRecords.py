@@ -7,7 +7,7 @@ webOfScienceExportFiles = ["2019.txt"]
 def getLinkFromArxiv(doi):
   r = requests.get('https://arxiv.org/search/?query=' + doi.replace('/', '%2F') + '&searchtype=doi')
   for line in r.text.split('\n'):
-    if 'https://arxiv.org/pdf' in line: return line.split('a href="')[-1].split('"')[0]
+    if 'https://arxiv.org/pdf' in line: return line.split('a href="')[1].split('"')[0]
   return None
 
 def getPaper(doi, outFile):
@@ -21,9 +21,10 @@ def getPaper(doi, outFile):
   elif 'epjconf'                           in doi: link = getLinkFromArxiv(doi)
   elif 'epjc'                              in doi: link = 'https://link.springer.com/content/pdf/' + doi
   elif 'physletb'                          in doi: link = getLinkFromArxiv(doi)
+  elif 'nuclphysa'                         in doi: link = getLinkFromArxiv(doi)
 # elif '10.1038/nature14474'               == doi: link = 'https://www.nature.com/nature/journal/v522/n7554/pdf/nature14474.pdf' # Add special cases like this
   else:                                            link = 'https://iopscience.iop.org/article/' + doi + '/pdf'  # for the ones on IOP science, but they block your IP if you download too much
-# else:                                            link = getLinkFromArxiv(doi)
+#  else:                                            link = getLinkFromArxiv(doi)
   if link:
     try:    urllib.request.urlretrieve(link, outFile)
     except: print('Problem with link ' + link)
@@ -38,7 +39,7 @@ def writeSingleRecord(outFile, lines):
       for line in lines:
         if line.startswith('DI'):
           getPaper(line.split()[-1], outFile.replace('.txt', '.pdf'))
-          print("Downloading %s" % line.replace('DI ', ''))
+          print("Downloading %s %s" % (outFile, line.replace('DI ', '')))
         out.write(line)
   return foundGhent
 
